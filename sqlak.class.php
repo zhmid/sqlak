@@ -1,4 +1,5 @@
 <?php
+
 class sqlak
 {
     var mysqli|false $db;
@@ -11,6 +12,16 @@ class sqlak
             $where = " WHERE " . $where;
         }
         return $where;
+    }
+
+    private function sqlize($value): string
+    {
+        if (is_string($value)) {
+            $value = "'$value'";
+        } else {
+            $value = "$value";
+        }
+        return $value;
     }
 
     function __construct($config, $db, $options = false)
@@ -30,12 +41,12 @@ class sqlak
                 $port = 3306;
             }
             if (isset($options["socket"])) {
-                return $this->db = mysqli_connect($db, $user, $pass, $port, $options["socket"]);
+                return $this->db = mysqli_connect($host, $user, $pass, $db,$port, $options["socket"]);
             } else {
-                return $this->db = mysqli_connect($db, $user, $pass, $port);
+                return $this->db = mysqli_connect($host, $user, $pass, $db, $port);
             }
         } else {
-            return $this->db = mysqli_connect($db, $user, $pass);
+            return $this->db = mysqli_connect($host, $user, $pass, $db);
         }
     }
 
@@ -49,7 +60,7 @@ class sqlak
         $where = $this->where($where);
         $commands = "";
         for ($i = 0; $i < count($command["col"]); $i++) {
-            $commands .= " " . $command["col"][$i] . " = " . $command["val"][$i];
+            $commands .= " " . $command["col"][$i] . " = " . $this->sqlize($command["val"][$i]);
         }
         return $this->do("UPDATE $table SET$commands$where");
     }
@@ -84,10 +95,10 @@ class sqlak
         for ($i = 0; $i < count($command["col"]); $i++) {
             if ($i + 1 == count($command["col"])) {
                 $commands[0] .= $command["col"][$i];
-                $commands[1] .= $command["val"][$i];
+                $commands[1] .= $this->sqlize($command["val"][$i]);
             } else {
                 $commands[0] .= $command["col"][$i] . ", ";
-                $commands[1] .= $command["val"][$i] . ", ";
+                $commands[1] .= $this->sqlize($command["val"][$i]) . ", ";
             }
         }
         return $this->do("INSERT INTO $table (" . $commands[0] . ") VALUES (" . $commands[1] . ")");
@@ -98,4 +109,3 @@ class sqlak
         return mysqli_num_rows($this->sel($table, '*', $where));
     }
 }
-
