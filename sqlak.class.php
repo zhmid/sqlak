@@ -41,7 +41,7 @@ class sqlak
                 $port = 3306;
             }
             if (isset($options["socket"])) {
-                return $this->db = mysqli_connect($host, $user, $pass, $db,$port, $options["socket"]);
+                return $this->db = mysqli_connect($host, $user, $pass, $db, $port, $options["socket"]);
             } else {
                 return $this->db = mysqli_connect($host, $user, $pass, $db, $port);
             }
@@ -74,13 +74,14 @@ class sqlak
         return $this->do("SELECT $col FROM $table$where");
     }
 
-    function give($table, $col = false, $where = false): mysqli_result|bool
+    function give($table, $col = false, $where = false): array
     {
-        $where = $this->where($where);
-        if (!$col) {
-            $col = "*";
+        $res = $this->sel($table,$col,$where);
+        $t = [];
+        while ($r = mysqli_fetch_assoc($res)) {
+            array_push($t, $r);
         }
-        return mysqli_fetch_assoc($this->do("SELECT $col FROM $table$where"));
+        return $t;
     }
 
     function del($table, $where = false): mysqli_result|bool
