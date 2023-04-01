@@ -74,9 +74,9 @@ class sqlak
         return $this->do("SELECT $col FROM $table$where");
     }
 
-    function give($table, $col = false, $where = false): array
+    function give($table, $where = false, $col = false): array
     {
-        $res = $this->sel($table,$col,$where);
+        $res = $this->sel($table, $col, $where);
         $t = [];
         while ($r = mysqli_fetch_assoc($res)) {
             array_push($t, $r);
