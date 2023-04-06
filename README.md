@@ -1,4 +1,4 @@
-<h1>SQLAK</h1>
+<h1>Sqlak</h1>
 
   <p>SQLAK is a lightweight PHP class that simplifies writing SQL queries and interacting with databases using the MySQLi extension. This README provides an overview of how to use each of SQLAK's functions.</p>
 
