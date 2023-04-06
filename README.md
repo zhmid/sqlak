@@ -6,7 +6,7 @@
 
   <p>To create a new database connection, you need to create a new instance of the <code>sqlak</code> class by passing in the database configuration settings and the name of your database:</p>
 
-  <pre><code>$db = new sqlak(
+  <pre><code>$db = new sqlak((
     'host' =&gt; 'localhost',
     'user' =&gt; 'root',
     'pass' =&gt; 'password'
